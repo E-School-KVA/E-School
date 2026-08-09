@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+  <meta name="theme-color" content="#5E5CE6">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+<title>E-School</title>
+<style>
+  :root{
+    --bg:#F2F2F7;
+    --card:#FFFFFF;
+    --card-glass:rgba(255,255,255,0.78);
+    --brand:#5E5CE6;
+    --brand-2:#0A84FF;
+    --brand-soft:#EDEDFB;
+    --blue:#0A84FF;
+    --blue-soft:#E5F2FF;
+    --green:#34C759;
+    --green-soft:#E7F9EC;
+    --success:#30D158;
+    --success-soft:#E6FBEA;
+    --warning:#FF9F0A;
+    --warning-soft:#FFF3E0;
+    --danger:#FF453A;
+    --danger-soft:#FFEAE9;
+    --text:#1C1C1E;
+    --text2:#8E8E93;
+    --sep:rgba(60,60,67,0.13);
+    --radius-lg:22px;
+    --radius-md:16px;
+    --radius-sm:11px;
+    --shadow-card:0 1px 2px rgba(0,0,0,0.045), 0 10px 26px rgba(28,28,30,0.06);
+    --shadow-float:0 8px 20px rgba(94,92,230,0.35);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  button, input, select{font-family:inherit;}
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:
+      radial-gradient(480px 260px at 85% -8%, rgba(94,92,230,0.14), transparent 60%),
+      radial-gradient(420px 220px at -10% 0%, rgba(10,132,255,0.10), transparent 55%),
+      var(--bg);
+  }
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 6px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+  }
+  .topbar h1{
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:-0.5px;
+    margin:0;
+  }
+  .topbar .sub{
+    font-size:13px;
+    color:var(--text2);
+    font-weight:500;
+  }
+  .brand-mark{display:flex; align-items:center; gap:8px;}
+  .brand-dot{
+    width:9px;height:9px;border-radius:50%;
+    background:linear-gradient(135deg, var(--brand), var(--brand-2));
+    box-shadow:0 0 0 5px rgba(94,92,230,0.14);
+  }
+
+  main{
+    flex:1;
+    padding:6px 20px 110px;
+    animation:screenIn .38s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes screenIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* ---------- Ring card ---------- */
+  .ring-card{
+    background:var(--card-glass);
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid rgba(255,255,255,0.6);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-card);
+    padding:26px 20px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:14px 0 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .ring-glow{
+    position:absolute; inset:-40%;
+    background:radial-gradient(circle, rgba(48,209,88,0.18), transparent 65%);
+    animation:pulseGlow 2.6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes pulseGlow{
+    0%,100%{opacity:.5; transform:scale(1);}
+    50%{opacity:1; transform:scale(1.08);}
+  }
+  .ring-wrap{position:relative; width:190px; height:190px; margin-bottom:6px;}
+  .ring-svg{width:100%;height:100%;}
+  .ring-bg{stroke:rgba(60,60,67,0.09);}
+  .ring-fg{
+    stroke:var(--brand);
+    transition:stroke-dashoffset 1.3s cubic-bezier(.22,1,.36,1), stroke 0.5s ease;
+  }
+  .ring-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .ring-number{font-size:42px; font-weight:800; letter-spacing:-1px; font-variant-numeric:tabular-nums; line-height:1;}
+  .ring-label{font-size:12.5px; color:var(--text2); font-weight:600; margin-top:6px;}
+  .tier-pill{margin-top:14px; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:700; transition:all .3s ease;}
+  .ring-meta{margin-top:14px; font-size:12.5px; color:var(--text2); font-weight:500;}
+
+  /* ---------- Section header ---------- */
+  .sec-head{display:flex; align-items:center; justify-content:space-between; margin:0 2px 10px;}
+  .sec-head h2{font-size:20px; font-weight:800; letter-spacing:-0.3px; margin:0;}
+  .count-badge{background:var(--brand-soft); color:var(--brand); font-size:12.5px; font-weight:700; padding:3px 10px; border-radius:20px;}
+
+  /* ---------- Course card ---------- */
+  .course-list{display:flex; flex-direction:column; gap:10px;}
+  .course-card{
+    background:var(--card);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-card);
+    padding:14px;
+    animation:cardIn .4s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes cardIn{
+    from{opacity:0; transform:translateY(8px) scale(.98);}
+    to{opacity:1; transform:translateY(0) scale(1);}
+  }
+  .course-top{display:flex; align-items:center; justify-content:space-between; cursor:pointer; gap:10px;}
+  .course-info{display:flex; flex-direction:column; gap:5px; min-width:0;}
+  .course-name{font-size:16.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .chip-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .chip{font-size:11.5px; font-weight:600; color:var(--text2); background:rgba(60,60,67,0.06); padding:3px 9px; border-radius:8px;}
+  .grade-pill{min-width:54px; text-align:center; padding:8px 10px; border-radius:12px; font-weight:800; font-size:16px; font-variant-numeric:tabular-nums; flex-shrink:0; transition:background .3s ease, color .3s ease;}
+  .grade-pill small{display:block; font-size:9.5px; font-weight:700; margin-top:1px; letter-spacing:.2px;}
+  .chevron{color:var(--text2); transition:transform .3s cubic-bezier(.22,1,.36,1); flex-shrink:0;}
+  .course-card.open .chevron{transform:rotate(90deg);}
+  .course-detail{max-height:0; overflow:hidden; transition:max-height .42s cubic-bezier(.22,1,.36,1);}
+  .course-card.open .course-detail{max-height:600px;}
+  .detail-inner{padding-top:16px;}
+
+  /* breakdown bar */
+  .bar-track{
+    height:11px; width:100%; background:rgba(60,60,67,0.08);
+    border-radius:20px; overflow:hidden; display:flex;
+  }
+  .bar-seg{height:100%; width:0%; transition:width 1s cubic-bezier(.22,1,.36,1);}
+  .bar-legend{display:flex; flex-direction:column; gap:9px; margin-top:14px;}
+  .legend-row{display:flex; align-items:center; gap:9px; font-size:13px;}
+  .legend-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .legend-name{font-weight:700; flex-shrink:0;}
+  .legend-percent{color:var(--text2); font-size:11.5px;}
+  .legend-fill{flex:1; border-bottom:1px dotted var(--sep); margin:0 4px; transform:translateY(-3px);}
+  .legend-vals{display:flex; align-items:baseline; gap:5px; font-variant-numeric:tabular-nums;}
+  .legend-note{color:var(--text2); font-size:12px;}
+  .legend-contrib{font-weight:800;}
+  .sum-line{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:12px; padding-top:12px; border-top:1.5px solid var(--sep);
+    font-weight:800; font-size:15px;
+  }
+  .sum-line .val{font-size:20px; font-variant-numeric:tabular-nums;}
+
+  .detail-actions{display:flex; gap:8px; margin-top:16px;}
+  .mini-btn{flex:1; border:none; padding:11px; border-radius:12px; font-size:13.5px; font-weight:700; cursor:pointer; transition:transform .15s ease, opacity .15s ease;}
+  .mini-btn:active{transform:scale(0.95); opacity:.85;}
+  .mini-btn.edit{background:var(--brand-soft); color:var(--brand);}
+  .mini-btn.del{background:var(--danger-soft); color:var(--danger);}
+
+  /* ---------- Empty state ---------- */
+  .empty{text-align:center; padding:50px 20px; color:var(--text2);}
+  .empty .glyph{width:64px; height:64px; margin:0 auto 14px; border-radius:20px; background:var(--brand-soft); display:flex; align-items:center; justify-content:center;}
+  .empty h3{color:var(--text); font-size:17px; margin:0 0 6px;}
+  .empty p{font-size:13.5px; margin:0 0 18px; line-height:1.5;}
+  .empty .cta{display:inline-flex; align-items:center; gap:6px; background:var(--brand); color:#fff; border:none; padding:11px 20px; border-radius:14px; font-weight:700; font-size:14px; cursor:pointer;}
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed; right:20px;
+    bottom:calc(env(safe-area-inset-bottom,0px) + 92px);
+    width:56px; height:56px; border-radius:50%;
+    background:linear-gradient(135deg, var(--brand), var(--brand-2));
+    color:#fff; border:none; font-size:28px; line-height:1;
+    box-shadow:var(--shadow-float);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:transform .18s cubic-bezier(.22,1,.36,1);
+    z-index:40;
+  }
+  .fab:active{transform:scale(0.9);}
+
+  /* ---------- Tabbar ---------- */
+  .tabbar{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:0;
+    width:100%; max-width:480px; display:flex;
+    background:rgba(255,255,255,0.82);
+    backdrop-filter:blur(22px) saturate(180%); -webkit-backdrop-filter:blur(22px) saturate(180%);
+    border-top:1px solid var(--sep);
+    padding:8px 6px calc(env(safe-area-inset-bottom,0px) + 8px);
+    z-index:35;
+  }
+  .tab-btn{flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 2px; color:var(--text2); font-size:11px; font-weight:600; cursor:pointer; transition:color .2s ease, transform .15s ease;}
+  .tab-btn:active{transform:scale(0.92);}
+  .tab-btn.active{color:var(--brand);}
+  .tab-btn svg{transition:transform .2s cubic-bezier(.22,1,.36,1);}
+  .tab-btn.active svg{transform:translateY(-1px);}
+
+  /* ---------- Form elements ---------- */
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:7px; text-transform:uppercase; letter-spacing:.3px;}
+  .input{width:100%; padding:13px 14px; border-radius:12px; border:1.5px solid var(--sep); background:#F9F9FB; font-size:16px; font-weight:600; color:var(--text); outline:none; transition:border-color .2s ease, background .2s ease;}
+  .input:focus{border-color:var(--brand); background:#fff;}
+  .stepper{display:flex; align-items:center; justify-content:center; gap:22px; background:#F9F9FB; border:1.5px solid var(--sep); border-radius:12px; padding:10px;}
+  .step-btn{width:38px; height:38px; border-radius:50%; border:none; background:var(--brand-soft); color:var(--brand); font-size:20px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .15s ease;}
+  .step-btn:active{transform:scale(0.88);}
+  .step-val{font-size:20px; font-weight:800; min-width:70px; text-align:center; font-variant-numeric:tabular-nums;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+  /* fixed component cards in sheet */
+  .comp-fixed-card{background:#F9F9FB; border:1.5px solid var(--sep); border-radius:16px; padding:14px; margin-bottom:12px;}
+  .comp-fixed-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .comp-icon{width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .comp-fixed-title{font-size:14.5px; font-weight:800; flex:1;}
+  .comp-percent-badge{font-size:11.5px; font-weight:800; padding:4px 9px; border-radius:8px;}
+  .comp-avg-preview{font-size:12.5px; color:var(--text2); font-weight:600; margin-top:8px;}
+  .comp-avg-preview b{color:var(--text); font-variant-numeric:tabular-nums;}
+
+  .mini-field label{font-size:10.5px; margin-bottom:4px; text-transform:none; letter-spacing:0;}
+  .mini-field .input{padding:10px 8px; font-size:15px; text-align:center;}
+
+  .live-preview{
+    background:linear-gradient(135deg, var(--brand-soft), #F5F4FF);
+    border-radius:18px; padding:20px 16px; text-align:center; margin-top:4px;
+  }
+  .live-preview .big{font-size:36px; font-weight:800; color:var(--brand); font-variant-numeric:tabular-nums;}
+  .live-preview .cap{font-size:12.5px; color:var(--text2); font-weight:600; margin-top:4px;}
+
+  /* ---------- Sheet / modal ---------- */
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,0.42); z-index:60; opacity:0; pointer-events:none; transition:opacity .28s ease;}
+  .overlay.show{opacity:1; pointer-events:auto;}
+  .sheet{
+    position:fixed; left:50%; transform:translateX(-50%) translateY(100%); bottom:0;
+    width:100%; max-width:480px; max-height:90vh;
+    background:var(--bg); border-radius:24px 24px 0 0;
+    box-shadow:0 -10px 40px rgba(0,0,0,0.25);
+    transition:transform .38s cubic-bezier(.22,1,.36,1);
+    display:flex; flex-direction:column; z-index:61;
+  }
+  .sheet.show{transform:translateX(-50%) translateY(0);}
+  .sheet-handle{width:38px; height:5px; background:rgba(60,60,67,0.25); border-radius:3px; margin:10px auto 4px; flex-shrink:0;}
+  .sheet-head{display:flex; align-items:center; justify-content:space-between; padding:12px 20px 14px; flex-shrink:0; border-bottom:1px solid var(--sep);}
+  .sheet-head h3{font-size:18px; font-weight:800; margin:0;}
+  .sheet-close{width:30px; height:30px; border-radius:50%; border:none; background:rgba(60,60,67,0.08); color:var(--text2); font-size:15px; cursor:pointer;}
+  .sheet-body{padding:18px 20px 10px; overflow-y:auto; flex:1;}
+  .sheet-foot{padding:12px 20px calc(env(safe-area-inset-bottom,0px) + 16px); border-top:1px solid var(--sep); flex-shrink:0;}
+  .save-btn{width:100%; border:none; background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; padding:15px; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer; transition:transform .15s ease, opacity .2s ease;}
+  .save-btn:disabled{opacity:.4; cursor:not-allowed;}
+  .save-btn:not(:disabled):active{transform:scale(0.97);}
+
+  .confirm-box{
+    position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(0.9);
+    width:82%; max-width:320px; background:var(--card); border-radius:20px;
+    padding:22px 20px 16px; text-align:center; z-index:71;
+    opacity:0; pointer-events:none; transition:all .25s cubic-bezier(.22,1,.36,1);
+    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+  }
+  .confirm-box.show{opacity:1; transform:translate(-50%,-50%) scale(1); pointer-events:auto;}
+  .confirm-box h4{margin:0 0 8px; font-size:16.5px; font-weight:800;}
+  .confirm-box p{margin:0 0 18px; font-size:13.5px; color:var(--text2); line-height:1.5;}
+  .confirm-actions{display:flex; gap:10px;}
+  .confirm-actions button{flex:1; border:none; padding:11px; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer;}
+  .confirm-actions .cancel{background:rgba(60,60,67,0.08); color:var(--text);}
+  .confirm-actions .confirm{background:var(--danger); color:#fff;}
+
+  .toast{
+    position:fixed; left:50%; bottom:110px; transform:translateX(-50%) translateY(20px);
+    background:rgba(28,28,30,0.92); color:#fff; padding:12px 18px; border-radius:14px;
+    font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:8px;
+    opacity:0; pointer-events:none; transition:all .3s cubic-bezier(.22,1,.36,1); z-index:80; max-width:86%;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* ---------- Goal tab ---------- */
+  .goal-card{background:var(--card); border-radius:var(--radius-md); box-shadow:var(--shadow-card); padding:18px; margin-bottom:14px;}
+  .goal-result{text-align:center; background:linear-gradient(135deg, var(--brand-soft), #F5F4FF); border-radius:18px; padding:22px 16px; margin-top:6px; transition:background .3s ease;}
+  .goal-result .big{font-size:38px; font-weight:800; color:var(--brand); font-variant-numeric:tabular-nums;}
+  .goal-result .cap{font-size:13px; color:var(--text2); font-weight:600; margin-top:4px;}
+  .goal-result.bad{background:linear-gradient(135deg, var(--danger-soft), #FFF0EF);}
+  .goal-result.bad .big{color:var(--danger);}
+  .goal-result.good{background:linear-gradient(135deg, var(--success-soft), #EEFBF1);}
+  .goal-result.good .big{color:#1a8f3f;}
+  .sub-note{font-size:12.5px; color:var(--text2); margin-top:12px; line-height:1.5; text-align:center;}
+
+  /* ---------- Calculator tab ---------- */
+  .calc-result-card{background:linear-gradient(135deg, var(--brand), var(--brand-2)); border-radius:var(--radius-lg); padding:24px 20px; text-align:center; color:#fff; margin-bottom:18px; box-shadow:0 12px 26px rgba(94,92,230,0.3);}
+  .calc-result-card .big{font-size:44px; font-weight:800; font-variant-numeric:tabular-nums;}
+  .calc-result-card .cap{font-size:13px; opacity:.85; font-weight:600; margin-top:4px;}
+  .calc-row{display:flex; gap:8px; align-items:center; margin-bottom:9px;}
+  .calc-row .input{padding:11px 12px; font-size:15px;}
+  .calc-row .rm{width:34px; height:34px; border-radius:10px; flex-shrink:0; border:none; background:var(--danger-soft); color:var(--danger); font-weight:800; cursor:pointer;}
+  .calc-actions{display:flex; gap:10px; margin-top:12px;}
+  .calc-actions button{flex:1; border:none; padding:12px; border-radius:12px; font-weight:700; font-size:13.5px; cursor:pointer;}
+  .calc-actions .add{background:var(--brand-soft); color:var(--brand);}
+  .calc-actions .clear{background:rgba(60,60,67,0.08); color:var(--text2);}
+
+  /* ---------- Loading ---------- */
+  .loading-screen{position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; transition:opacity .4s ease;}
+  .loading-screen.hide{opacity:0; pointer-events:none;}
+  .spinner{width:38px; height:38px; border-radius:50%; border:3.5px solid var(--brand-soft); border-top-color:var(--brand); animation:spin 0.8s linear infinite; margin-bottom:16px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-logo{font-size:22px; font-weight:800; letter-spacing:-0.3px;}
+  .loading-logo span{color:var(--brand);}
+
+  ::-webkit-scrollbar{width:0; height:0;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001s !important; transition-duration:0.001s !important;}
+  }
+
+  .tool-card{background:var(--card);border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:18px;margin-bottom:14px;}
+  .tool-card h3{margin:0 0 12px;font-size:17px;font-weight:800;}
+  .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .stat-box{background:var(--brand-soft);border-radius:14px;padding:14px;text-align:center;}
+  .stat-box .big{font-size:25px;font-weight:800;color:var(--brand);}
+  .stat-box .cap{font-size:11.5px;color:var(--text2);font-weight:600;margin-top:3px;}
+  .history-chart{height:150px;display:flex;align-items:flex-end;gap:5px;padding:10px 4px 0;border-bottom:1px solid var(--sep);}
+  .history-bar{flex:1;min-width:4px;border-radius:7px 7px 0 0;background:var(--brand);position:relative;}
+  .history-bar span{position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);font-size:9px;color:var(--text2);white-space:nowrap;}
+  .day-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;}
+  .day-btn{border:0;background:rgba(60,60,67,.08);padding:8px 11px;border-radius:10px;font-weight:700;font-size:12px;white-space:nowrap;}
+  .day-btn.active{background:var(--brand);color:#fff;}
+  .schedule-row,.homework-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--sep);}
+  .schedule-row:last-child,.homework-row:last-child{border-bottom:0;}
+  .schedule-time{font-weight:800;min-width:48px;color:var(--brand);}
+  .schedule-name{font-weight:700;flex:1;}
+  .homework-row.done{opacity:.55;text-decoration:line-through;}
+  .homework-date{font-size:11px;color:var(--text2);}
+  .icon-btn{border:0;border-radius:10px;padding:8px 10px;background:rgba(60,60,67,.08);font-weight:700;}
+  .danger-btn{background:var(--danger-soft);color:var(--danger);}
+  .theme-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .theme-btn{border:1.5px solid var(--sep);background:var(--card);padding:10px 13px;border-radius:12px;font-weight:700;}
+  .theme-btn.active{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
+  .empty-mini{text-align:center;color:var(--text2);font-size:13px;padding:12px 0;}
+  .install-note{background:var(--blue-soft);color:#1769aa;padding:12px;border-radius:12px;font-size:12.5px;line-height:1.45;}
+  .check-row{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-top:10px;}
+  .check-row input{width:18px;height:18px;}
+  html.force-dark{--bg:#0b0b0f;--card:#17171c;--card-glass:rgba(23,23,28,.82);--text:#f5f5f7;--text2:#98989d;--sep:rgba(235,235,245,.13);--brand-soft:#252347;--blue-soft:#14283b;--success-soft:#153522;--warning-soft:#3a2b12;--danger-soft:#3b1715;}
+  html.force-dark .tabbar{background:rgba(23,23,28,.86);}
+  html.force-dark .input,html.force-dark .stepper,html.force-dark .comp-fixed-card{background:#202026;color:var(--text);}
+  html.force-dark{color-scheme:dark;}
+
+
+  /* Premium motion & interaction */
+  :root{
+    --ease-spring:cubic-bezier(.22,1,.36,1);
+    --ease-smooth:cubic-bezier(.4,0,.2,1);
+  }
+  *{-webkit-tap-highlight-color:transparent;}
+  body{overscroll-behavior-y:none;}
+  button,.mini-btn,.tab-btn,.day-btn,.theme-btn,.icon-btn,.course-card,.stat-box,.tool-card{
+    transition:transform .28s var(--ease-spring),opacity .22s var(--ease-smooth),
+               background-color .25s var(--ease-smooth),box-shadow .3s var(--ease-spring),
+               border-color .25s var(--ease-smooth);
+  }
+  button:active,.mini-btn:active,.tab-btn:active,.day-btn:active,.theme-btn:active,.icon-btn:active{
+    transform:scale(.94);
+  }
+  .course-card,.tool-card{
+    animation:cardIn .48s var(--ease-spring) both;
+  }
+  .course-card:hover,.tool-card:hover{
+    transform:translateY(-2px);
+  }
+  .stat-box{
+    animation:popIn .42s var(--ease-spring) both;
+  }
+  .stat-box:nth-child(2){animation-delay:.035s}
+  .stat-box:nth-child(3){animation-delay:.07s}
+  .stat-box:nth-child(4){animation-delay:.105s}
+  .history-bar{transform-origin:bottom;animation:barGrow .65s var(--ease-spring) both;}
+  .history-bar:nth-child(2){animation-delay:.03s}.history-bar:nth-child(3){animation-delay:.06s}
+  .history-bar:nth-child(4){animation-delay:.09s}.history-bar:nth-child(5){animation-delay:.12s}
+  .history-bar:nth-child(6){animation-delay:.15s}.history-bar:nth-child(7){animation-delay:.18s}
+  .tabbar{
+    transition:transform .45s var(--ease-spring),box-shadow .35s var(--ease-smooth);
+  }
+  .tab-btn.active{
+    animation:tabBounce .38s var(--ease-spring);
+  }
+  input,select,textarea{
+    transition:border-color .22s var(--ease-smooth),box-shadow .28s var(--ease-spring),
+               transform .25s var(--ease-spring);
+  }
+  input:focus,select:focus,textarea:focus{
+    transform:translateY(-1px);
+  }
+  .sheet,.modal,.overlay{
+    transition:opacity .3s var(--ease-smooth);
+  }
+  .sheet-content,.modal-content{
+    animation:sheetUp .5s var(--ease-spring);
+  }
+  .toast{
+    animation:toastIn .45s var(--ease-spring);
+  }
+  .day-btn.active,.theme-btn.active{
+    box-shadow:0 5px 18px rgba(94,92,230,.18);
+  }
+  @keyframes cardIn{
+    from{opacity:0;transform:translateY(12px) scale(.985)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+  @keyframes popIn{
+    from{opacity:0;transform:scale(.92)}
+    to{opacity:1;transform:scale(1)}
+  }
+  @keyframes barGrow{
+    from{transform:scaleY(0)}
+    to{transform:scaleY(1)}
+  }
+  @keyframes tabBounce{
+    0%{transform:scale(.9)} 60%{transform:scale(1.05)} 100%{transform:scale(1)}
+  }
+  @keyframes sheetUp{
+    from{opacity:0;transform:translateY(22px) scale(.98)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+  @keyframes toastIn{
+    from{opacity:0;transform:translateY(10px) scale(.94)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  }
+
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <div class="loading-logo">E<span>-School</span></div>
+</div>
+
+<div class="app">
+  <header class="topbar">
+    <div>
+      <div class="brand-mark"><span class="brand-dot"></span><h1 id="pageTitle">E-School</h1></div>
+      <div class="sub" id="pageSub">ortaokul not takibi</div>
+    </div>
+  </header>
+
+  <main id="screen"></main>
+
+  <button class="fab" id="fabAdd" title="Ders ekle">+</button>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-tab="home">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      Anasayfa
+    </button>
+    <button class="tab-btn" data-tab="goal">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+      Hedefim
+    </button>
+    <button class="tab-btn" data-tab="calc">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/></svg>
+      Hesaplayıcı
+    </button>
+    <button class="tab-btn" data-tab="tools">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="8"/></svg>
+      Araçlar
+    </button>
+  </nav>
+</div>
+
+<div class="overlay" id="sheetOverlay"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h3 id="sheetTitle">Yeni Ders</h3>
+    <button class="sheet-close" id="sheetClose">✕</button>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+  <div class="sheet-foot">
+    <button class="save-btn" id="sheetSave" disabled>Kaydet</button>
+  </div>
+</div>
+
+<div class="overlay" id="confirmOverlay"></div>
+<div class="confirm-box" id="confirmBox">
+  <h4>Dersi sil</h4>
+  <p id="confirmText">Bu dersi silmek istediğine emin misin?</p>
+  <div class="confirm-actions">
+    <button class="cancel" id="confirmCancel">Vazgeç</button>
+    <button class="confirm" id="confirmOk">Sil</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ======================= FIXED GRADING SYSTEM ======================= */
+  // Her ders için sabit sistem: %50 Sınav, %25 Dinleme Sınavı, %25 Konuşma Sınavı
+  var COMP_DEFS = [
+    {key:'sinav',   name:'Sınav',           percent:50, color:'#5E5CE6', soft:'#EDEDFB',
+     icon:'<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="M9 9h1M9 13h6M9 17h6"/>'},
+    {key:'dinleme', name:'Dinleme Sınavı',  percent:25, color:'#0A84FF', soft:'#E5F2FF',
+     icon:'<path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M21 14v4a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v1Z"/><path d="M3 14v4a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v1Z"/>'},
+    {key:'konusma', name:'Konuşma Sınavı',  percent:25, color:'#34C759', soft:'#E7F9EC',
+     icon:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>'}
+  ];
+
+  function defaultComponents(){
+    return COMP_DEFS.map(function(d){
+      return {key:d.key, name:d.name, percent:d.percent, exam1:'', exam2:''};
+    });
+  }
+
+  function compDef(key){
+    for(var i=0;i<COMP_DEFS.length;i++) if(COMP_DEFS[i].key===key) return COMP_DEFS[i];
+    return COMP_DEFS[0];
+  }
+
+  /* ======================= STATE ======================= */
+  var state = {
+    courses: [],
+    activeTab: 'home',
+    openCourseId: null,
+    editingId: null,
+    sheetComponents: [],
+    calcRows: []
+  };
+
+  var els = {
+    screen: document.getElementById('screen'),
+    pageTitle: document.getElementById('pageTitle'),
+    pageSub: document.getElementById('pageSub'),
+    fab: document.getElementById('fabAdd'),
+    sheetOverlay: document.getElementById('sheetOverlay'),
+    sheet: document.getElementById('sheet'),
+    sheetBody: document.getElementById('sheetBody'),
+    sheetTitle: document.getElementById('sheetTitle'),
+    sheetSave: document.getElementById('sheetSave'),
+    sheetClose: document.getElementById('sheetClose'),
+    confirmOverlay: document.getElementById('confirmOverlay'),
+    confirmBox: document.getElementById('confirmBox'),
+    confirmText: document.getElementById('confirmText'),
+    confirmCancel: document.getElementById('confirmCancel'),
+    confirmOk: document.getElementById('confirmOk'),
+    toast: document.getElementById('toast'),
+    loading: document.getElementById('loadingScreen')
+  };
+
+  function uid(){ return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
+
+  /* ======================= KALICI HAFIZA / STORAGE ======================= */
+  // PWA ve APK için cihaz üzerinde kalıcı veri saklama.
+  // localStorage; uygulama kapatılsa, yeniden açılsa veya cihaz yeniden başlatılsa
+  // verileri korur. Kullanıcı uygulama verisini temizlerse veriler silinir.
+  var STORAGE_KEY = 'e-school-courses-v1';
+
+  async function loadCourses(){
+    try{
+      // Öncelik: standart tarayıcı/PWA/APK depolaması
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        var saved = JSON.parse(raw);
+        if(Array.isArray(saved)) return saved;
+      }
+
+      // Eski ortam desteği: window.storage varsa mevcut veriyi de kurtar.
+      if(window.storage && typeof window.storage.get === 'function'){
+        var res = await window.storage.get('courses', false);
+        if(res && res.value){
+          var legacy = JSON.parse(res.value);
+          if(Array.isArray(legacy)){
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(legacy));
+            return legacy;
+          }
+        }
+      }
+      return [];
+    }catch(e){
+      console.warn('Kalıcı hafıza okunamadı:', e);
+      return [];
+    }
+  }
+
+  async function persist(){
+    try{
+      var data = JSON.stringify(state.courses);
+      localStorage.setItem(STORAGE_KEY, data);
+
+      // Destekleyen eski ortamlarla da senkron tut.
+      if(window.storage && typeof window.storage.set === 'function'){
+        try{ await window.storage.set('courses', data, false); }catch(ignore){}
+      }
+    }catch(e){
+      console.error('Kalıcı hafızaya kaydedilemedi:', e);
+      showToast('Veriler kaydedilemedi');
+    }
+  }
+
+  /* ======================= GRADE MATH ======================= */
+  function clampNum(v){
+    if(v === '' || v === null || v === undefined) return null;
+    var n = parseFloat(v);
+    if(isNaN(n)) return null;
+    return n;
+  }
+
+  // Bir bileşenin (Sınav/Dinleme/Konuşma) ortalaması: girilen 1. ve 2. notların ortalaması
+  function componentGrade(comp){
+    var e1 = clampNum(comp.exam1), e2 = clampNum(comp.exam2);
+    var vals = [];
+    if(e1 !== null) vals.push(e1);
+    if(e2 !== null) vals.push(e2);
+    if(vals.length === 0) return null;
+    var sum = 0; for(var i=0;i<vals.length;i++) sum += vals[i];
+    return sum / vals.length;
+  }
+
+  // Bileşenlerin katkı payları: comp_ortalama * yüzde / girilmiş_toplam_yüzde
+  // (hepsi doluysa toplam otomatik 100 olur ve toplamları ders notunu verir)
+  function courseBreakdown(course){
+    var comps = course.components || [];
+    var totalPercentUsed = 0;
+    comps.forEach(function(c){
+      if(componentGrade(c) !== null) totalPercentUsed += c.percent;
+    });
+    return comps.map(function(c){
+      var g = componentGrade(c);
+      var contrib = (g === null || totalPercentUsed === 0) ? null : (g * c.percent / totalPercentUsed);
+      return {comp:c, def:compDef(c.key), grade:g, contrib:contrib};
+    });
+  }
+
+  function courseGrade(course){
+    var parts = courseBreakdown(course);
+    var any = false, sum = 0;
+    parts.forEach(function(p){ if(p.contrib !== null){ sum += p.contrib; any = true; } });
+    return any ? sum : null;
+  }
+
+  function overallAverage(courses){
+    var totalWeight = 0, weightedSum = 0;
+    courses.forEach(function(c){
+      var g = courseGrade(c);
+      if(g !== null){ weightedSum += g * (c.weight || 1); totalWeight += (c.weight || 1); }
+    });
+    if(totalWeight === 0) return null;
+    return weightedSum / totalWeight;
+  }
+
+  function gradeTier(g){
+    if(g === null) return {label:'Veri Yok', color:'#8E8E93', soft:'rgba(142,142,147,0.12)'};
+    if(g >= 85) return {label:'Pekiyi', color:'#30D158', soft:'var(--success-soft)'};
+    if(g >= 70) return {label:'İyi', color:'#0A84FF', soft:'#E5F2FF'};
+    if(g >= 50) return {label:'Orta', color:'#FF9F0A', soft:'var(--warning-soft)'};
+    return {label:'Zayıf', color:'#FF453A', soft:'var(--danger-soft)'};
+  }
+
+  function fmt(n, decimals){
+    if(n === null || n === undefined || isNaN(n)) return '-';
+    if(decimals === undefined) decimals = 1;
+    var f = decimals===0 ? Math.round(n) : Math.round(n*10)/10;
+    return f.toString().replace('.', ',');
+  }
+
+  /* ---- animated count-up for numbers ---- */
+  function animateNumber(el, to, decimals){
+    if(!el) return;
+    if(to === null || to === undefined || isNaN(to)){ el.textContent = '-'; return; }
+    decimals = decimals===undefined?1:decimals;
+    var duration = 900;
+    var start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min(1, (ts-start)/duration);
+      var eased = 1 - Math.pow(1-p, 3);
+      var val = to*eased;
+      el.textContent = fmt(val, decimals);
+      if(p<1) requestAnimationFrame(step);
+      else el.textContent = fmt(to, decimals);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ======================= TOAST ======================= */
+  var toastTimer = null;
+  function showToast(msg){
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ els.toast.classList.remove('show'); }, 2200);
+  }
+
+  function escapeHtml(s){
+    var d = document.createElement('div');
+    d.textContent = s == null ? '' : s;
+    return d.innerHTML;
+  }
+
+  /* ======================= RENDER: HOME ======================= */
+  function renderHome(){
+    var avg = overallAverage(state.courses);
+    var tier = gradeTier(avg);
+    var totalWeight = state.courses.reduce(function(s,c){ return s + (c.weight||0); }, 0);
+
+    var circumference = 2 * Math.PI * 85;
+    var offset = avg === null ? circumference : circumference * (1 - Math.max(0, Math.min(100, avg)) / 100);
+
+    var html = '';
+    html += '<div class="ring-card">';
+    if(avg !== null && avg >= 85) html += '<div class="ring-glow"></div>';
+    html += '  <div class="ring-wrap">';
+    html += '    <svg class="ring-svg" viewBox="0 0 200 200">';
+    html += '      <circle class="ring-bg" cx="100" cy="100" r="85" stroke-width="14" fill="none"/>';
+    html += '      <circle class="ring-fg" id="ringFg" cx="100" cy="100" r="85" stroke-width="14" fill="none" stroke-linecap="round" transform="rotate(-90 100 100)" stroke-dasharray="'+circumference+'" stroke-dashoffset="'+circumference+'"/>';
+    html += '    </svg>';
+    html += '    <div class="ring-center"><div class="ring-number" id="ringNumber">0</div><div class="ring-label">Genel Ortalama</div></div>';
+    html += '  </div>';
+    html += '  <div class="tier-pill" style="background:'+tier.soft+'; color:'+tier.color+'">'+tier.label+'</div>';
+    html += '  <div class="ring-meta">'+state.courses.length+' ders &middot; haftalık toplam '+totalWeight+' saat</div>';
+    html += '</div>';
+
+    html += '<div class="sec-head"><h2>Derslerim</h2><span class="count-badge">'+state.courses.length+'</span></div>';
+
+    if(state.courses.length === 0){
+      html += '<div class="empty">';
+      html += '  <div class="glyph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5E5CE6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1 2.7 3 6 3s6-2 6-3v-5.5"/></svg></div>';
+      html += '  <h3>Henüz ders eklemedin</h3>';
+      html += '  <p>İlk dersini ekleyerek not ortalamanı takip etmeye başla.</p>';
+      html += '  <button class="cta" id="emptyAddBtn">+ Ders Ekle</button>';
+      html += '</div>';
+    } else {
+      html += '<div class="course-list">';
+      state.courses.forEach(function(c, idx){ html += renderCourseCard(c, idx); });
+      html += '</div>';
+    }
+
+    els.screen.innerHTML = html;
+
+    var ringFg = document.getElementById('ringFg');
+    if(ringFg){
+      ringFg.style.stroke = tier.color;
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){ ringFg.style.strokeDashoffset = offset; });
+      });
+    }
+    animateNumber(document.getElementById('ringNumber'), avg, 1);
+
+    var emptyBtn = document.getElementById('emptyAddBtn');
+    if(emptyBtn) emptyBtn.addEventListener('click', function(){ openSheet(null); });
+
+    state.courses.forEach(function(c){
+      var top = document.getElementById('top_'+c.id);
+      if(top) top.addEventListener('click', function(){
+        state.openCourseId = (state.openCourseId === c.id) ? null : c.id;
+        renderHome();
+      });
+      var editBtn = document.getElementById('edit_'+c.id);
+      if(editBtn) editBtn.addEventListener('click', function(e){ e.stopPropagation(); openSheet(c.id); });
+      var delBtn = document.getElementById('del_'+c.id);
+      if(delBtn) delBtn.addEventListener('click', function(e){ e.stopPropagation(); askDelete(c.id, c.name); });
+
+      if(state.openCourseId === c.id){
+        var g = courseGrade(c);
+        var parts = courseBreakdown(c);
+        parts.forEach(function(p){
+          var segEl = document.getElementById('seg_'+c.id+'_'+p.def.key);
+          if(segEl) requestAnimationFrame(function(){ segEl.style.width = (p.contrib===null?0:p.contrib) + '%'; });
+          var numEl = document.getElementById('num_'+c.id+'_'+p.def.key);
+          if(numEl) animateNumber(numEl, p.contrib, 1);
+        });
+        animateNumber(document.getElementById('sum_'+c.id), g, 1);
+      }
+    });
+  }
+
+  function renderCourseCard(c, idx){
+    var g = courseGrade(c);
+    var tier = gradeTier(g);
+    var isOpen = state.openCourseId === c.id;
+    var parts = courseBreakdown(c);
+
+    var html = '<div class="course-card'+(isOpen?' open':'')+'" style="animation-delay:'+(idx*0.04)+'s">';
+    html += '  <div class="course-top" id="top_'+c.id+'">';
+    html += '    <div class="course-info">';
+    html += '      <div class="course-name">'+escapeHtml(c.name)+'</div>';
+    html += '      <div class="chip-row"><span class="chip">Haftada '+c.weight+' ders</span></div>';
+    html += '    </div>';
+    html += '    <div class="grade-pill" style="background:'+tier.soft+'; color:'+tier.color+'">'+fmt(g)+'<small>'+tier.label+'</small></div>';
+    html += '    <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
+    html += '  </div>';
+
+    html += '  <div class="course-detail"><div class="detail-inner">';
+    html += '    <div class="bar-track">';
+    parts.forEach(function(p){
+      html += '<div class="bar-seg" id="seg_'+c.id+'_'+p.def.key+'" style="background:'+p.def.color+';width:0%"></div>';
+    });
+    html += '    </div>';
+    html += '    <div class="bar-legend">';
+    parts.forEach(function(p){
+      html += '<div class="legend-row">';
+      html += '  <span class="legend-dot" style="background:'+p.def.color+'"></span>';
+      html += '  <span class="legend-name">'+p.def.name+'</span>';
+      html += '  <span class="legend-percent">%'+p.comp.percent+'</span>';
+      html += '  <span class="legend-fill"></span>';
+      html += '  <span class="legend-vals"><span class="legend-note">not '+fmt(p.grade)+'</span><span class="legend-contrib" id="num_'+c.id+'_'+p.def.key+'" style="color:'+p.def.color+'">0</span></span>';
+      html += '</div>';
+    });
+    html += '    </div>';
+    html += '    <div class="sum-line"><span>Ders Notu</span><span class="val" id="sum_'+c.id+'">0</span></div>';
+    html += '    <div class="detail-actions">';
+    html += '      <button class="mini-btn edit" id="edit_'+c.id+'">Düzenle</button>';
+    html += '      <button class="mini-btn del" id="del_'+c.id+'">Sil</button>';
+    html += '    </div>';
+    html += '  </div></div>';
+    html += '</div>';
+    return html;
+  }
+
+  /* ======================= DELETE CONFIRM ======================= */
+  var pendingDeleteId = null;
+  function askDelete(id, name){
+    pendingDeleteId = id;
+    els.confirmText.textContent = '"'+name+'" dersini silmek istediğine emin misin? Bu işlem geri alınamaz.';
+    els.confirmOverlay.classList.add('show');
+    els.confirmBox.classList.add('show');
+  }
+  function closeConfirm(){
+    els.confirmOverlay.classList.remove('show');
+    els.confirmBox.classList.remove('show');
+    pendingDeleteId = null;
+  }
+  els.confirmCancel.addEventListener('click', closeConfirm);
+  els.confirmOverlay.addEventListener('click', function(e){ if(e.target===els.confirmOverlay) closeConfirm(); });
+  els.confirmOk.addEventListener('click', function(){
+    if(pendingDeleteId){
+      state.courses = state.courses.filter(function(c){ return c.id !== pendingDeleteId; });
+      persist();
+      showToast('Ders silindi');
+      closeConfirm();
+      render();
+    }
+  });
+
+  /* ======================= SHEET: ADD/EDIT COURSE ======================= */
+  function openSheet(editId){
+    state.editingId = editId;
+    var course = editId ? state.courses.find(function(c){return c.id===editId;}) : null;
+
+    state.sheetWeight = course ? course.weight : 3;
+    state.sheetName = course ? course.name : '';
+    state.sheetComponents = course ? JSON.parse(JSON.stringify(course.components)) : defaultComponents();
+
+    els.sheetTitle.textContent = editId ? 'Dersi Düzenle' : 'Yeni Ders';
+    renderSheetBody();
+    els.sheetOverlay.classList.add('show');
+    els.sheet.classList.add('show');
+  }
+
+  function closeSheet(){
+    els.sheetOverlay.classList.remove('show');
+    els.sheet.classList.remove('show');
+  }
+  els.sheetClose.addEventListener('click', closeSheet);
+  els.sheetOverlay.addEventListener('click', function(e){ if(e.target===els.sheetOverlay) closeSheet(); });
+
+  function sheetPreviewGrade(){
+    var fakeCourse = {weight:1, components: state.sheetComponents};
+    return courseGrade(fakeCourse);
+  }
+
+  function renderSheetBody(){
+    var html = '';
+    html += '<div class="field"><label>Ders Adı</label><input class="input" id="fName" type="text" placeholder="Örn. Matematik, İngilizce" value="'+escapeHtml(state.sheetName||'')+'"></div>';
+
+    html += '<div class="field"><label>Haftalık Ders Saati (Ağırlık)</label>';
+    html += '  <div class="stepper"><button class="step-btn" id="wMinus" type="button">–</button><div class="step-val" id="wVal">'+state.sheetWeight+'</div><button class="step-btn" id="wPlus" type="button">+</button></div>';
+    html += '</div>';
+
+    html += '<div class="field"><label>Notlar</label>';
+    state.sheetComponents.forEach(function(comp, i){
+      var def = compDef(comp.key);
+      html += '<div class="comp-fixed-card">';
+      html += '  <div class="comp-fixed-head">';
+      html += '    <div class="comp-icon" style="background:'+def.soft+'; color:'+def.color+'"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+def.icon+'</svg></div>';
+      html += '    <div class="comp-fixed-title">'+def.name+'</div>';
+      html += '    <div class="comp-percent-badge" style="background:'+def.soft+'; color:'+def.color+'">%'+comp.percent+'</div>';
+      html += '  </div>';
+      html += '  <div class="two-col">';
+      html += '    <div class="mini-field"><label>1. '+def.name+'</label><input class="input" data-idx="'+i+'" data-f="exam1" type="number" min="0" max="100" placeholder="—" value="'+(comp.exam1==null?'':comp.exam1)+'"></div>';
+      html += '    <div class="mini-field"><label>2. '+def.name+'</label><input class="input" data-idx="'+i+'" data-f="exam2" type="number" min="0" max="100" placeholder="—" value="'+(comp.exam2==null?'':comp.exam2)+'"></div>';
+      html += '  </div>';
+      var cg = componentGrade(comp);
+      html += '  <div class="comp-avg-preview" id="avgprev_'+i+'">Ortalama: <b>'+fmt(cg)+'</b></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    var preview = sheetPreviewGrade();
+    var tier = gradeTier(preview);
+    html += '<div class="live-preview" id="livePreview" style="background:'+(preview===null?'linear-gradient(135deg,var(--brand-soft),#F5F4FF)':'linear-gradient(135deg,'+tier.soft+','+tier.soft+')')+'">';
+    html += '  <div class="big" id="previewBig" style="color:'+(preview===null?'var(--brand)':tier.color)+'">'+fmt(preview)+'</div>';
+    html += '  <div class="cap">Tahmini Ders Notu'+(preview!==null?' &middot; '+tier.label:'')+'</div>';
+    html += '</div>';
+
+    els.sheetBody.innerHTML = html;
+    bindSheetEvents();
+    validateSheet();
+  }
+
+  function updateLivePreview(){
+    var preview = sheetPreviewGrade();
+    var tier = gradeTier(preview);
+    var big = document.getElementById('previewBig');
+    var wrap = document.getElementById('livePreview');
+    if(big){
+      big.textContent = fmt(preview);
+      big.style.color = preview===null ? 'var(--brand)' : tier.color;
+    }
+    if(wrap){
+      wrap.style.background = preview===null ? 'linear-gradient(135deg,var(--brand-soft),#F5F4FF)' : 'linear-gradient(135deg,'+tier.soft+','+tier.soft+')';
+      var capEl = wrap.querySelector('.cap');
+      if(capEl) capEl.textContent = 'Tahmini Ders Notu' + (preview!==null ? ' · '+tier.label : '');
+    }
+  }
+
+  function bindSheetEvents(){
+    var fName = document.getElementById('fName');
+    fName.addEventListener('input', function(){ state.sheetName = fName.value; validateSheet(); });
+
+    document.getElementById('wMinus').addEventListener('click', function(){
+      state.sheetWeight = Math.max(1, (state.sheetWeight||1) - 1);
+      document.getElementById('wVal').textContent = state.sheetWeight;
+    });
+    document.getElementById('wPlus').addEventListener('click', function(){
+      state.sheetWeight = Math.min(20, (state.sheetWeight||1) + 1);
+      document.getElementById('wVal').textContent = state.sheetWeight;
+    });
+
+    document.querySelectorAll('.comp-fixed-card input').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var idx = parseInt(inp.getAttribute('data-idx'));
+        var f = inp.getAttribute('data-f');
+        state.sheetComponents[idx][f] = inp.value;
+        var cg = componentGrade(state.sheetComponents[idx]);
+        var avgEl = document.getElementById('avgprev_'+idx);
+        if(avgEl) avgEl.innerHTML = 'Ortalama: <b>'+fmt(cg)+'</b>';
+        updateLivePreview();
+        validateSheet();
+      });
+    });
+  }
+
+  function validateSheet(){
+    var valid = !!(state.sheetName && state.sheetName.trim());
+    els.sheetSave.disabled = !valid;
+    return valid;
+  }
+
+  els.sheetSave.addEventListener('click', function(){
+    if(!validateSheet()) return;
+    var courseObj = {
+      id: state.editingId || uid(),
+      name: state.sheetName.trim(),
+      weight: state.sheetWeight || 1,
+      components: state.sheetComponents.map(function(c){
+        return {key:c.key, name:c.name, percent:c.percent, exam1:c.exam1, exam2:c.exam2};
+      })
+    };
+    if(state.editingId){
+      var idx = state.courses.findIndex(function(c){return c.id===state.editingId;});
+      state.courses[idx] = courseObj;
+      showToast('Ders güncellendi');
+    } else {
+      state.courses.push(courseObj);
+      showToast('Ders eklendi');
+    }
+    persist();
+    addAverageHistory();
+    closeSheet();
+    render();
+  });
+
+  /* ======================= RENDER: GOAL (Hedefim) ======================= */
+  var goalState = { courseId:null, compKey:null, exam1:'', target:'' };
+
+  function renderGoal(){
+    var html = '';
+    if(state.courses.length === 0){
+      html += '<div class="empty">';
+      html += '  <div class="glyph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5E5CE6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>';
+      html += '  <h3>Önce bir ders ekle</h3>';
+      html += '  <p>Hedef hesaplaması yapabilmek için en az bir ders eklemen gerekiyor.</p>';
+      html += '  <button class="cta" id="goalAddBtn">+ Ders Ekle</button>';
+      html += '</div>';
+      els.screen.innerHTML = html;
+      document.getElementById('goalAddBtn').addEventListener('click', function(){ openSheet(null); });
+      return;
+    }
+
+    if(!goalState.courseId || !state.courses.find(function(c){return c.id===goalState.courseId;})){
+      goalState.courseId = state.courses[0].id;
+    }
+    var course = state.courses.find(function(c){return c.id===goalState.courseId;});
+    if(!goalState.compKey || !course.components.find(function(c){return c.key===goalState.compKey;})){
+      goalState.compKey = course.components[0].key;
+    }
+    var comp = course.components.find(function(c){return c.key===goalState.compKey;});
+    var def = compDef(comp.key);
+
+    html += '<div class="goal-card">';
+    html += '  <div class="field"><label>Ders Seç</label><select class="input" id="goalCourseSel">';
+    state.courses.forEach(function(c){
+      html += '<option value="'+c.id+'" '+(c.id===course.id?'selected':'')+'>'+escapeHtml(c.name)+'</option>';
+    });
+    html += '  </select></div>';
+
+    html += '  <div class="field"><label>Hangi Notu Hesaplayalım?</label><select class="input" id="goalCompSel">';
+    course.components.forEach(function(c){
+      html += '<option value="'+c.key+'" '+(c.key===comp.key?'selected':'')+'>'+compDef(c.key).name+' (%'+c.percent+')</option>';
+    });
+    html += '  </select></div>';
+
+    var curExam1 = comp.exam1 !== '' && comp.exam1 != null ? comp.exam1 : '';
+    html += '  <div class="two-col">';
+    html += '    <div class="field"><label>1. '+def.name+' Notun</label><input class="input" id="goalExam1" type="number" min="0" max="100" value="'+curExam1+'"></div>';
+    html += '    <div class="field"><label>Hedef Not (0-100)</label><input class="input" id="goalTarget" type="number" min="0" max="100" placeholder="Örn. 85" value="'+(goalState.target||'')+'"></div>';
+    html += '  </div>';
+    html += '</div>';
+
+    var e1 = clampNum(curExam1);
+    var target = clampNum(goalState.target);
+    var resultHtml = '';
+    if(e1 === null || target === null){
+      resultHtml += '<div class="goal-result"><div class="big">?</div><div class="cap">1. '+def.name.toLowerCase()+' notunu ve hedefini gir</div></div>';
+      resultHtml += '<div class="sub-note">2. '+def.name.toLowerCase()+'dan kaç alman gerektiğini hesaplayayım.</div>';
+    } else {
+      var needed = target*2 - e1;
+      if(needed > 100){
+        resultHtml += '<div class="goal-result bad"><div class="big">'+fmt(needed)+'</div><div class="cap">2. '+def.name+' için gerekli not (100\'ü aşıyor)</div></div>';
+        resultHtml += '<div class="sub-note">Bu hedefe sadece 2. sınavla ulaşman matematiksel olarak mümkün değil — hedefini biraz düşürmeyi deneyebilirsin.</div>';
+      } else if(needed < 0){
+        resultHtml += '<div class="goal-result good"><div class="big">0</div><div class="cap">Zaten hedefi geçtin! 🎉</div></div>';
+        resultHtml += '<div class="sub-note">1. '+def.name.toLowerCase()+' notunla bile hedefinin üzerindesin.</div>';
+      } else {
+        resultHtml += '<div class="goal-result good"><div class="big">'+fmt(needed)+'</div><div class="cap">2. '+def.name+' için en az bu notu almalısın</div></div>';
+        resultHtml += '<div class="sub-note">Bu, "'+def.name+'" bileşeninin ortalamasını %'+fmt(target)+' yapar (%'+comp.percent+' ağırlıkla ders notuna katkı sağlar). Diğer bileşenler aynı kalırsa ders notun buna göre şekillenir.</div>';
+      }
+    }
+    html += '<div class="goal-card">'+resultHtml+'</div>';
+
+    els.screen.innerHTML = html;
+
+    document.getElementById('goalCourseSel').addEventListener('change', function(e){
+      goalState.courseId = e.target.value; goalState.compKey = null; renderGoal();
+    });
+    document.getElementById('goalCompSel').addEventListener('change', function(e){
+      goalState.compKey = e.target.value; renderGoal();
+    });
+    document.getElementById('goalExam1').addEventListener('input', function(e){
+      comp.exam1 = e.target.value;
+      renderGoal();
+    });
+    document.getElementById('goalTarget').addEventListener('input', function(e){
+      goalState.target = e.target.value;
+      renderGoal();
+    });
+  }
+
+  /* ======================= RENDER: CALCULATOR ======================= */
+  function ensureCalcRows(){
+    if(state.calcRows.length === 0){
+      state.calcRows = [{id:uid(), grade:'', weight:''},{id:uid(), grade:'', weight:''}];
+    }
+  }
+  function renderCalc(){
+    ensureCalcRows();
+    var totalW = 0, sum = 0;
+    state.calcRows.forEach(function(r){
+      var g = clampNum(r.grade), w = clampNum(r.weight);
+      if(g !== null && w !== null){ sum += g*w; totalW += w; }
+    });
+    var result = totalW > 0 ? sum/totalW : null;
+    var tier = gradeTier(result);
+
+    var html = '';
+    html += '<div class="calc-result-card"><div class="big">'+fmt(result)+'</div><div class="cap">Ağırlıklı Ortalama'+(result!==null?' &middot; '+tier.label:'')+'</div></div>';
+    html += '<div class="sec-head"><h2>Notlar</h2></div>';
+    state.calcRows.forEach(function(r, i){
+      html += '<div class="calc-row">';
+      html += '  <input class="input" data-idx="'+i+'" data-f="grade" type="number" min="0" max="100" placeholder="Not" value="'+(r.grade==null?'':r.grade)+'">';
+      html += '  <input class="input" data-idx="'+i+'" data-f="weight" type="number" min="0" placeholder="Ağırlık" value="'+(r.weight==null?'':r.weight)+'">';
+      html += '  <button class="rm" data-idx="'+i+'">✕</button>';
+      html += '</div>';
+    });
+    html += '<div class="calc-actions"><button class="add" id="calcAddRow">+ Not Ekle</button><button class="clear" id="calcClear">Temizle</button></div>';
+    html += '<div class="sub-note" style="margin-top:16px;">Örn: bir dersin sınav notlarını, veya farklı derslerin ağırlıklarını girerek genel bir ortalama hesaplayabilirsin.</div>';
+
+    els.screen.innerHTML = html;
+
+    document.querySelectorAll('.calc-row input').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var idx = parseInt(inp.getAttribute('data-idx'));
+        var f = inp.getAttribute('data-f');
+        state.calcRows[idx][f] = inp.value;
+        renderCalc();
+      });
+    });
+    document.querySelectorAll('.rm').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var idx = parseInt(btn.getAttribute('data-idx'));
+        state.calcRows.splice(idx,1);
+        renderCalc();
+      });
+    });
+    document.getElementById('calcAddRow').addEventListener('click', function(){
+      state.calcRows.push({id:uid(), grade:'', weight:''});
+      renderCalc();
+    });
+    document.getElementById('calcClear').addEventListener('click', function(){
+      state.calcRows = [{id:uid(), grade:'', weight:''},{id:uid(), grade:'', weight:''}];
+      renderCalc();
+    });
+  }
+
+
+
+  /* Smooth screen transitions */
+  function smoothRender(fn){
+    if(document.startViewTransition) return document.startViewTransition(fn);
+    return fn();
+  }
+
+  /* ======================= EXTRA FEATURES ======================= */
+  var extraState = {history:[],schedule:{Pazartesi:[],Salı:[],Çarşamba:[],Perşembe:[],Cuma:[]},homework:[],theme:'system',reminders:true,selectedDay:'Pazartesi'};
+  function extraLoad(){try{var r=localStorage.getItem('eschool_extra');if(r){extraState=Object.assign(extraState,JSON.parse(r));}}catch(e){}}
+  function extraSave(){try{localStorage.setItem('eschool_extra',JSON.stringify(extraState));}catch(e){}}
+  function addAverageHistory(){var a=overallAverage(state.courses);if(a===null)return;var d=new Date().toISOString().slice(0,10),last=extraState.history[extraState.history.length-1];if(!last||last.date!==d){extraState.history.push({date:d,value:Math.round(a*10)/10});extraState.history=extraState.history.slice(-20);extraSave();}}
+  function applyTheme(){document.documentElement.classList.toggle('force-dark',extraState.theme==='dark');}
+  function renderTools(){
+    addAverageHistory();
+    var avg=overallAverage(state.courses), vals=state.courses.map(courseGrade).filter(function(x){return x!==null;});
+    var hi=vals.length?Math.max.apply(null,vals):null,lo=vals.length?Math.min.apply(null,vals):null;
+    var days=Object.keys(extraState.schedule), day=extraState.selectedDay||days[0]; extraState.selectedDay=day;
+    var html='<div class="tool-card"><h3>📊 İstatistikler</h3><div class="tool-grid">';
+    html+='<div class="stat-box"><div class="big">'+fmt(avg)+'</div><div class="cap">Genel Ortalama</div></div><div class="stat-box"><div class="big">'+state.courses.length+'</div><div class="cap">Ders</div></div>';
+    html+='<div class="stat-box"><div class="big">'+fmt(hi)+'</div><div class="cap">En Yüksek</div></div><div class="stat-box"><div class="big">'+fmt(lo)+'</div><div class="cap">En Düşük</div></div></div></div>';
+    html+='<div class="tool-card"><h3>📈 Ortalama Geçmişi</h3>';
+    if(extraState.history.length){var mx=Math.max.apply(null,extraState.history.map(function(x){return x.value;})),mn=Math.min.apply(null,extraState.history.map(function(x){return x.value;})),rg=Math.max(1,mx-mn);html+='<div class="history-chart">';extraState.history.forEach(function(x){var h=25+((x.value-mn)/rg)*110;html+='<div class="history-bar" style="height:'+h+'px"><span>'+fmt(x.value)+'</span></div>';});html+='</div>';}else html+='<div class="empty-mini">Not girdikçe geçmiş burada oluşacak.</div>';html+='</div>';
+    html+='<div class="tool-card"><h3>📚 Ders Programı</h3><div class="day-tabs">';days.forEach(function(d){html+='<button class="day-btn '+(d===day?'active':'')+'" data-day="'+d+'">'+d.slice(0,3)+'</button>';});html+='</div>';
+    var ls=extraState.schedule[day]||[]; if(ls.length){ls.forEach(function(l,i){html+='<div class="schedule-row"><span class="schedule-time">'+escapeHtml(l.time)+'</span><span class="schedule-name">'+escapeHtml(l.name)+'</span><button class="icon-btn danger-btn" data-del-lesson="'+i+'">Sil</button></div>';});}else html+='<div class="empty-mini">Bu gün için ders yok.</div>';
+    html+='<div class="two-col" style="margin-top:10px"><input class="input" id="lessonTime" placeholder="08:00"><input class="input" id="lessonName" placeholder="Ders"></div><button class="mini-btn edit" id="addLesson" style="width:100%;margin-top:8px">+ Programa Ekle</button></div>';
+    html+='<div class="tool-card"><h3>📝 Ödevler</h3>';if(extraState.homework.length){extraState.homework.forEach(function(h,i){html+='<div class="homework-row '+(h.done?'done':'')+'"><input type="checkbox" data-hw-check="'+i+'" '+(h.done?'checked':'')+'><div style="flex:1"><b>'+escapeHtml(h.title)+'</b><div class="homework-date">'+escapeHtml(h.date||'Tarih yok')+'</div></div><button class="icon-btn danger-btn" data-hw-del="'+i+'">Sil</button></div>';});}else html+='<div class="empty-mini">Henüz ödev eklenmedi.</div>';
+    html+='<div class="two-col" style="margin-top:10px"><input class="input" id="hwTitle" placeholder="Ödev"><input class="input" id="hwDate" type="date"></div><button class="mini-btn edit" id="addHomework" style="width:100%;margin-top:8px">+ Ödev Ekle</button></div>';
+    html+='<div class="tool-card"><h3>🎯 Hedef Özeti</h3><div class="sub-note">Hedefim sekmesindeki sistemle sınavlarda hedef notunu hesaplayabilirsin.</div><div class="stat-box" style="margin-top:10px"><div class="big">'+(avg===null?'—':(avg>=85?'🏆 85+':fmt(Math.max(0,85-avg))+' puan'))+'</div><div class="cap">85 ortalamaya kalan</div></div></div>';
+    html+='<div class="tool-card"><h3>🎨 Görünüm</h3><div class="theme-row">';['system','light','dark'].forEach(function(t){html+='<button class="theme-btn '+(extraState.theme===t?'active':'')+'" data-theme="'+t+'">'+({system:'Sistem',light:'Açık',dark:'Koyu'}[t])+'</button>';});html+='</div></div>';
+    html+='<div class="tool-card"><h3>🔔 Bildirimler</h3><div class="install-note">Ödev ve sınav hatırlatmaları için bildirim izni verebilirsin.</div><button class="mini-btn edit" id="enableNotifications" style="width:100%;margin-top:10px">Bildirimleri Aç</button><label class="check-row"><input type="checkbox" id="reminderToggle" '+(extraState.reminders?'checked':'')+'> Hatırlatmaları etkin tut</label></div>';
+    
+    els.screen.innerHTML=html;bindToolsEvents();
+  }
+  function bindToolsEvents(){
+    document.querySelectorAll('[data-day]').forEach(function(b){b.addEventListener('click',function(){extraState.selectedDay=b.getAttribute('data-day');extraSave();renderTools();});});
+    document.querySelectorAll('[data-del-lesson]').forEach(function(b){b.addEventListener('click',function(){extraState.schedule[extraState.selectedDay].splice(parseInt(b.getAttribute('data-del-lesson')),1);extraSave();renderTools();});});
+    var al=document.getElementById('addLesson');if(al)al.addEventListener('click',function(){var time=document.getElementById('lessonTime').value.trim(),name=document.getElementById('lessonName').value.trim();if(!name){showToast('Ders adı gir');return;}extraState.schedule[extraState.selectedDay].push({time:time||'--:--',name:name});extraSave();renderTools();});
+    document.querySelectorAll('[data-hw-check]').forEach(function(b){b.addEventListener('change',function(){extraState.homework[parseInt(b.getAttribute('data-hw-check'))].done=b.checked;extraSave();renderTools();});});
+    document.querySelectorAll('[data-hw-del]').forEach(function(b){b.addEventListener('click',function(){extraState.homework.splice(parseInt(b.getAttribute('data-hw-del')),1);extraSave();renderTools();});});
+    var ah=document.getElementById('addHomework');if(ah)ah.addEventListener('click',function(){var title=document.getElementById('hwTitle').value.trim(),date=document.getElementById('hwDate').value;if(!title){showToast('Ödev adı gir');return;}extraState.homework.push({title:title,date:date,done:false});extraSave();renderTools();});
+    document.querySelectorAll('[data-theme]').forEach(function(b){b.addEventListener('click',function(){extraState.theme=b.getAttribute('data-theme');extraSave();applyTheme();renderTools();});});
+    var nt=document.getElementById('enableNotifications');if(nt)nt.addEventListener('click',async function(){if(!('Notification'in window)){showToast('Bildirim desteklenmiyor');return;}try{var p=await Notification.requestPermission();showToast(p==='granted'?'Bildirimler açıldı':'Bildirim izni verilmedi');}catch(e){showToast('Bildirim izni açılamadı');}});
+    var rt=document.getElementById('reminderToggle');if(rt)rt.addEventListener('change',function(){extraState.reminders=rt.checked;extraSave();});
+  }
+
+  /* ======================= TAB SWITCH / MAIN RENDER ======================= */
+  var titles = {
+    home: {t:'E-School', s:'ortaokul not takibi'},
+    goal: {t:'Hedefim', s:'istediğin notu tutturmak için gereken hesap'},
+    calc: {t:'Hesaplayıcı', s:'ağırlıklı ortalama hesapla'},
+    tools: {t:'Araçlar', s:'istatistikler, program, ödevler ve ayarlar'}
+  };
+
+  function render(){
+    els.screen.style.animation = 'none';
+    void els.screen.offsetWidth;
+    els.screen.style.animation = '';
+
+    els.pageTitle.textContent = titles[state.activeTab].t;
+    els.pageSub.textContent = titles[state.activeTab].s;
+    els.fab.style.display = state.activeTab === 'home' ? 'flex' : 'none';
+
+    document.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === state.activeTab);
+    });
+
+    if(state.activeTab === 'home') renderHome();
+    else if(state.activeTab === 'goal') renderGoal();
+    else if(state.activeTab === 'calc') renderCalc();
+    else renderTools();
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      state.activeTab = btn.getAttribute('data-tab');
+      render();
+    });
+  });
+  els.fab.addEventListener('click', function(){ openSheet(null); });
+
+  /* ======================= INIT ======================= */
+  (async function init(){
+    extraLoad();
+    applyTheme();
+    state.courses = await loadCourses();
+    // eski kayıtlarda "components" farklı yapıdaysa (eski standart/gelismis sistemi) sabit sisteme göç ettir
+    state.courses.forEach(function(c){
+      var hasFixedKeys = c.components && c.components.length===3 && c.components.every(function(cp){ return ['sinav','dinleme','konusma'].indexOf(cp.key) !== -1; });
+      if(!hasFixedKeys){
+        var fresh = defaultComponents();
+        if(c.components && c.components[0]){
+          fresh[0].exam1 = c.components[0].exam1;
+          fresh[0].exam2 = c.components[0].exam2;
+        }
+        c.components = fresh;
+      }
+    });
+    render();
+    setTimeout(function(){ els.loading.classList.add('hide'); }, 350);
+  })();
+
+})();
+</script>
+</body>
+</html>
