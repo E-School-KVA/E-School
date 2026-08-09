@@ -1,10 +1,21 @@
 {
-  "name": "E-School",
-  "short_name": "E-School",
-  "start_url": "./e-school-enhanced.html",
+  "short_name": "E-Okul",
+  "name": "E-Okul Portal Pro",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "display": "standalone",
-  "background_color": "#F2F2F7",
-  "theme_color": "#5E5CE6",
-  "lang": "tr",
-  "description": "Ortaokul not, hedef, ders programı ve ödev takip uygulaması"
+  "orientation": "portrait"
 }
