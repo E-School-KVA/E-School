@@ -1,0 +1,10 @@
+{
+  "name": "E-School",
+  "short_name": "E-School",
+  "start_url": "./e-school-enhanced.html",
+  "display": "standalone",
+  "background_color": "#F2F2F7",
+  "theme_color": "#5E5CE6",
+  "lang": "tr",
+  "description": "Ortaokul not, hedef, ders programı ve ödev takip uygulaması"
+}
